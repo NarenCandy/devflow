@@ -17,7 +17,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public Comment saveComment(Long issueId, Comment comment) {
-        Issue issue = issueService.fetchIssueById(issueId);
+        Issue issue = issueService.fetchIssueEntityById(issueId);
         comment.setIssue(issue);
     
         return commentRepository.save(comment);
