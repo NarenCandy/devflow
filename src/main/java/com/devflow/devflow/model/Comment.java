@@ -22,7 +22,9 @@ public class Comment{
 
     private Long id;
     private String content;
-    private String postedBy;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User postedBy;
     @CreationTimestamp
     private LocalDateTime createdAt;
     @ManyToOne

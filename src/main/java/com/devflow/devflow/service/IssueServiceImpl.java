@@ -30,7 +30,7 @@ public class IssueServiceImpl implements IssueService {
             saved.getTitle(),
             saved.getDescription(),
             saved.getStatus(),
-            saved.getPostedBy(),
+            saved.getPostedBy() != null ? saved.getPostedBy().getName() : null,
             saved.getProject().getId()
         );
     }
@@ -44,7 +44,7 @@ public class IssueServiceImpl implements IssueService {
                 i.getTitle(),
                 i.getDescription(),
                 i.getStatus(),
-                i.getPostedBy(),
+                i.getPostedBy() != null ? i.getPostedBy().getName() : null,
                 i.getProject().getId()
             ))
             .toList();
@@ -61,7 +61,7 @@ public class IssueServiceImpl implements IssueService {
             updated.getTitle(),
             updated.getDescription(),
             updated.getStatus(),
-            updated.getPostedBy(),
+            updated.getPostedBy() != null ? updated.getPostedBy().getName() : null,
             updated.getProject().getId());
        
     }
@@ -79,7 +79,7 @@ public class IssueServiceImpl implements IssueService {
             issue.getTitle(),
             issue.getDescription(),
             issue.getStatus(),
-            issue.getPostedBy(),
+            issue.getPostedBy() != null ? issue.getPostedBy().getName() : null,
             issue.getProject().getId()
         );
     }

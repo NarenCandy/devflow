@@ -27,7 +27,9 @@ public class Issue {
     private String title;
     private String description;
     private String status;
-    private String postedBy;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User postedBy;
     @OneToMany(mappedBy = "issue", cascade=CascadeType.ALL)
     @JsonManagedReference
     private List<Comment> comments;
