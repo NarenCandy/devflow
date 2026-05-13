@@ -9,8 +9,10 @@ import org.springframework.stereotype.Service;
 import com.devflow.devflow.dto.IssueDTO;
 import com.devflow.devflow.model.Issue;
 import com.devflow.devflow.model.Project;
+import com.devflow.devflow.model.User;
 import com.devflow.devflow.repository.IssueRepository;
 import com.devflow.devflow.repository.ProjectRepository;
+import com.devflow.devflow.repository.UserRepository;
 
 @Service
 public class IssueServiceImpl implements IssueService {
@@ -19,11 +21,15 @@ public class IssueServiceImpl implements IssueService {
     private IssueRepository issueRepository;
     @Autowired
     private ProjectRepository projectRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
-    public IssueDTO saveIssue(Issue issue, Long projectId) {
-        Project project = projectRepository.findById(projectId).get();
+    public IssueDTO saveIssue(Issue issue, Long projectId, String username) {
+        Project project = projectRepository.findById(projectId).orElseThrow(() -> new RuntimeException("Project not found with id: " + projectId));
         issue.setProject(project);
+        User user = userRepository.findByEmail(username).orElseThrow(() -> new RuntimeException("User not found with email: " + username));
+        issue.setPostedBy(user);
         Issue saved = issueRepository.save(issue);
         return new IssueDTO(
             saved.getId(),
@@ -52,9 +58,15 @@ public class IssueServiceImpl implements IssueService {
 
     @Override
     public IssueDTO updateIssue(Issue issue, Long id) {
-        Issue issuedb = issueRepository.findById(id).orElseThrow();
+        Issue issuedb = issueRepository.findById(id).orElseThrow(() -> new RuntimeException("Issue not found with id: " + id));
         if(Objects.nonNull(issue.getTitle()) && !"".equalsIgnoreCase(issue.getTitle())) {
             issuedb.setTitle(issue.getTitle());
+        }
+        if(Objects.nonNull(issue.getDescription()) && !"".equalsIgnoreCase(issue.getDescription())) {
+            issuedb.setDescription(issue.getDescription());
+        }
+        if(Objects.nonNull(issue.getStatus()) && !"".equalsIgnoreCase(issue.getStatus())) {
+            issuedb.setStatus(issue.getStatus());
         }
         Issue updated = issueRepository.save(issuedb);
         return new IssueDTO( updated.getId(),
@@ -68,12 +80,15 @@ public class IssueServiceImpl implements IssueService {
 
     @Override
     public void deleteIssue(Long id) {
+        if(!issueRepository.existsById(id)) {
+            throw new RuntimeException("Issue not found with id: " + id);
+        }
         issueRepository.deleteById(id);
     }
 
     @Override
     public IssueDTO fetchIssueById(Long id) {
-        Issue issue = issueRepository.findById(id).orElseThrow();
+        Issue issue = issueRepository.findById(id).orElseThrow(() -> new RuntimeException("Issue not found with id: " + id));
         return new IssueDTO(
             issue.getId(),
             issue.getTitle(),
@@ -87,7 +102,37 @@ public class IssueServiceImpl implements IssueService {
     //  This method is not exposed via controller, used internally for fetching Issue entity when needed
     @Override
     public Issue fetchIssueEntityById(Long id) {
-        return issueRepository.findById(id).orElseThrow();
+        return issueRepository.findById(id).orElseThrow(() -> new RuntimeException("Issue not found with id: " + id));
     }
+
+    @Override
+    public List<IssueDTO> fetchAllIssuesByProjectId(Long projectId) {
+        return issueRepository.findByProjectId(projectId)
+            .stream()
+            .map(i -> new IssueDTO(
+                i.getId(),
+                i.getTitle(),
+                i.getDescription(),
+                i.getStatus(),
+                i.getPostedBy() != null ? i.getPostedBy().getName() : null,
+                i.getProject().getId()
+            ))
+            .toList();
+}
+
+    @Override
+    public IssueDTO updateIssueStatus(Long id, String status){
+
+        Issue issuedb =issueRepository.findById(id).orElseThrow(() -> new RuntimeException("Issue not found with id: " + id));
+        issuedb.setStatus(status);
+        Issue updated = issueRepository.save(issuedb);
+        return new IssueDTO( updated.getId(),
+            updated.getTitle(),
+            updated.getDescription(),
+            updated.getStatus(),
+            updated.getPostedBy() != null ? updated.getPostedBy().getName() : null,
+            updated.getProject().getId());
+    }
+        
 
 }

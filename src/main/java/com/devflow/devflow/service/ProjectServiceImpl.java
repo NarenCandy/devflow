@@ -18,7 +18,8 @@ public class ProjectServiceImpl implements ProjectService{
 
     @Override
     public ProjectDTO fetchProjectById(Long id) {
-        Project p = projectRepository.findById(id).get();
+        Project p = projectRepository.findById(id)
+    .orElseThrow(() -> new RuntimeException("Project not found with id: " + id));
         return new ProjectDTO(
             p.getId(),
             p.getProject_name(),
