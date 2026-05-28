@@ -15,5 +15,6 @@ public interface IssueService {
     Issue fetchIssueEntityById(Long id);
     List<IssueDTO> fetchAllIssuesByProjectId(Long projectId);
     IssueDTO updateIssueStatus(Long id, String status);
+    IssueDTO assignIssue(Long issueId, Long userId);
 
 }

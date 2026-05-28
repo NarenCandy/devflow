@@ -11,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 
@@ -22,8 +23,11 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Email cannot be empty")
     private String email;
+    @NotBlank(message = "Password cannot be empty")
     private String password;
+    @NotBlank(message = "Name cannot be empty")
     private String name;
 
     @Override

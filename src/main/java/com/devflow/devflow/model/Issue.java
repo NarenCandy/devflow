@@ -13,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 
@@ -24,8 +25,10 @@ public class Issue {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Title cannot be empty")
     private String title;
     private String description;
+    @NotBlank(message = "Status cannot be empty")
     private String status;
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -37,6 +40,9 @@ public class Issue {
     @JoinColumn(name = "project_id", nullable = false)
     @JsonBackReference
     private Project project;
+    @ManyToOne
+    @JoinColumn(name = "assigned_to_id")
+    private User assignedTo;
 
 
 }

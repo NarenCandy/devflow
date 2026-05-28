@@ -37,7 +37,8 @@ public class IssueServiceImpl implements IssueService {
             saved.getDescription(),
             saved.getStatus(),
             saved.getPostedBy() != null ? saved.getPostedBy().getName() : null,
-            saved.getProject().getId()
+            saved.getProject().getId(),
+            saved.getAssignedTo() != null ? saved.getAssignedTo().getName() : null
         );
     }
 
@@ -51,7 +52,8 @@ public class IssueServiceImpl implements IssueService {
                 i.getDescription(),
                 i.getStatus(),
                 i.getPostedBy() != null ? i.getPostedBy().getName() : null,
-                i.getProject().getId()
+                i.getProject().getId(),
+                i.getAssignedTo() != null ? i.getAssignedTo().getName() : null
             ))
             .toList();
     }
@@ -74,7 +76,9 @@ public class IssueServiceImpl implements IssueService {
             updated.getDescription(),
             updated.getStatus(),
             updated.getPostedBy() != null ? updated.getPostedBy().getName() : null,
-            updated.getProject().getId());
+            updated.getProject().getId(),
+            updated.getAssignedTo() != null ? updated.getAssignedTo().getName() : null
+        );
        
     }
 
@@ -95,7 +99,8 @@ public class IssueServiceImpl implements IssueService {
             issue.getDescription(),
             issue.getStatus(),
             issue.getPostedBy() != null ? issue.getPostedBy().getName() : null,
-            issue.getProject().getId()
+            issue.getProject().getId(),
+            issue.getAssignedTo() != null ? issue.getAssignedTo().getName() : null
         );
     }
 
@@ -115,7 +120,8 @@ public class IssueServiceImpl implements IssueService {
                 i.getDescription(),
                 i.getStatus(),
                 i.getPostedBy() != null ? i.getPostedBy().getName() : null,
-                i.getProject().getId()
+                i.getProject().getId(),
+                i.getAssignedTo() != null ? i.getAssignedTo().getName() : null
             ))
             .toList();
 }
@@ -131,7 +137,26 @@ public class IssueServiceImpl implements IssueService {
             updated.getDescription(),
             updated.getStatus(),
             updated.getPostedBy() != null ? updated.getPostedBy().getName() : null,
-            updated.getProject().getId());
+            updated.getProject().getId(),
+            updated.getAssignedTo() != null ? updated.getAssignedTo().getName() : null
+        );
+    }
+
+    @Override
+    public IssueDTO assignIssue(Long issueId, Long userId) {
+        Issue issuedb =issueRepository.findById(issueId).orElseThrow(() -> new RuntimeException("Issue not found with id: " + issueId));
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+        issuedb.setAssignedTo(user);
+        Issue updated = issueRepository.save(issuedb);
+        return new IssueDTO( updated.getId(),
+            updated.getTitle(),
+            updated.getDescription(),
+            updated.getStatus(),
+            updated.getPostedBy() != null ? updated.getPostedBy().getName() : null,
+            updated.getProject().getId(),
+            updated.getAssignedTo() != null ? updated.getAssignedTo().getName() : null
+        );
+        
     }
         
 

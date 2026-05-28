@@ -15,7 +15,11 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
@@ -28,6 +32,7 @@ public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotBlank(message = "Project name cannot be empty")
     private String project_name;
     private String description;
     @CreationTimestamp
@@ -36,7 +41,11 @@ public class Project {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
     @Enumerated(EnumType.STRING)
+    @NotNull(message = "Priority cannot be null")
     private Priority priority;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User createdBy;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     @JsonManagedReference

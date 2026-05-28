@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.devflow.devflow.model.Comment;
 import com.devflow.devflow.service.CommentService;
 
+import jakarta.validation.Valid;
+
 
 @RestController
 @RequestMapping("/issue")
@@ -19,7 +21,7 @@ public class CommentController {
     CommentService commentService;
 
     @PostMapping("/{issue_id}/comment")
-    public Comment addComment(@PathVariable Long issue_id,
+    public Comment addComment(@PathVariable @Valid Long issue_id,
         @RequestBody Comment comment) {
       
         

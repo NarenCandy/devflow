@@ -5,14 +5,18 @@ import java.security.Principal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.devflow.devflow.dto.UserDTO;
+import com.devflow.devflow.dto.UserUpdateRequestDTO;
 import com.devflow.devflow.model.User;
 import com.devflow.devflow.repository.UserRepository;
 import com.devflow.devflow.util.JwtUtil;
+
+import jakarta.validation.Valid;
 
 
 @RestController
@@ -31,7 +35,7 @@ public class AuthController {
 
 
     @PostMapping("/register")
-    public String register(@RequestBody User user) {
+    public String register(@RequestBody @Valid User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         return "User registered successfully";
@@ -55,4 +59,22 @@ public class AuthController {
         return new UserDTO(user.getId(), user.getName(), user.getEmail());
 
     }
+
+    @PutMapping("/update")
+    public UserDTO updateUser(@RequestBody @Valid UserUpdateRequestDTO request, Principal principal){
+        String email = principal.getName();
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        if(request.getName() != null && !request.getName().isEmpty()){
+            user.setName(request.getName());
+        }
+        if(request.getPassword() != null && !request.getPassword().isBlank()){
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+        }
+        userRepository.save(user);
+        return new UserDTO(user.getId(), user.getName(), user.getEmail());
+
+
+
+    }
+    
 }

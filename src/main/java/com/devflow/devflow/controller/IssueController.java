@@ -62,10 +62,15 @@ public class IssueController {
     }
 
     @PutMapping("/issue/{id}")
-    public IssueDTO updateIssue(@PathVariable Long id, @RequestBody Issue issue) {
+    public IssueDTO updateIssue(@PathVariable Long id, @RequestBody @Valid Issue issue) {
        
         
         return issueService.updateIssue(issue, id);
+    }
+
+    @PatchMapping("/issue/{id}/assign/{userId}")
+    public IssueDTO assignIssue(@PathVariable Long id, @PathVariable Long userId) {
+        return issueService.assignIssue(id, userId);
     }
 
 }

@@ -11,15 +11,17 @@ public class ProjectDTO {
     private String description;
     private String status;
     private String priority;
+    private String createdBy;
     private List<Long> issueIds;   // only IDs, not full Issue objects
 
-    public ProjectDTO(Long id, String projectName, String description, String status, String priority, List<Long> issueIds) {
+    public ProjectDTO(Long id, String projectName, String description, String status, String priority, List<Long> issueIds, String createdBy) {
         this.id = id;
         this.projectName = projectName;
         this.description = description;
         this.status = status;
         this.priority = priority;
         this.issueIds = issueIds;
+        this.createdBy = createdBy;
     }
 
     // getters
